@@ -1,0 +1,33 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: #1f1f1f;
+  display: grid;
+  place-items: center;
+}
+
+.player {
+  width: 50px;
+  height: 50px;
+  background-color: red;
+  border-top: 5px solid yellow;
+  position: relative;
+}
+
+.player-tag {
+  width: max-content;
+  min-height: 20px;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: hsla(190, 30%, 94%, 1);
+}
+
+.player-box {
+  display: grid;
+  place-items: center;
+}
