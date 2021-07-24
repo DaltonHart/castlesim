@@ -11,11 +11,11 @@ socket.on("connect", () => {
     new Gatherer()
   );
 
-  const newPlayerBox = document.createElement("div");
-  newPlayerBox.classList.add("player-box");
-  newPlayerBox.innerHTML = `<div class="player" id="player-${player.data.socket_id}" ></div><div class="player-tag">${player.data.socket_id}</div>`;
+  // const newPlayerBox = document.createElement("div");
+  // newPlayerBox.classList.add("player-box");
+  // newPlayerBox.innerHTML = `<div class="player" id="player-${player.data.socket_id}" ></div><div class="player-tag">${player.data.socket_id}</div>`;
 
-  document.body.appendChild(newPlayerBox);
+  // document.body.appendChild(newPlayerBox);
 
   document.body.addEventListener("keydown", player.move);
   document.body.addEventListener("keyup", player.activate);
@@ -31,9 +31,11 @@ socket.on("connect", () => {
     };
   };
 
-  document.body.addEventListener("mousemove", throttle(player.look, 20));
+  // document.body.addEventListener("mousemove", throttle(player.look, 20));
 
   document.body.addEventListener("mousedown", player.role.attack);
 
   socket.emit("newPlayer", socket.id);
+
+  setMap();
 });

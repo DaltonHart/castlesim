@@ -10,9 +10,51 @@ class Player {
     this.data = data;
     this.role = role;
 
+    // render rulesets
+    this.tileFrom = [1,1];
+    this.tileTo = [1,1];
+    this.timeMoved = 0;
+    this.dimensions = [30,30];
+    this.position = [40,40];
+    this.delayMove = 700;
+
     this.move = this.move.bind(this);
     this.look = this.look.bind(this);
     this.activate = this.activate.bind(this);
+  }
+
+  placeAt(x,y){
+    this.tileFrom	= [x,y];
+	  this.tileTo		= [x,y];
+	  this.position	= [((tileW*x)+((tileW-this.dimensions[0])/2)),
+		((tileH*y)+((tileH-this.dimensions[1])/2))];
+  }
+
+  processMovement(t){
+    if(this.tileFrom[0]===this.tileTo[0] && this.tileFrom[1]===this.tileTo[1]){      
+      return false; 
+    }
+
+    if((t-this.timeMoved)>=this.delayMove){
+        this.placeAt(this.tileTo[0], this.tileTo[1]);
+    } else {
+      this.position[0] = (this.tileFrom[0] * tileW) + ((tileW-this.dimensions[0])/2);
+      this.position[1] = (this.tileFrom[1] * tileH) + ((tileH-this.dimensions[1])/2);
+
+      if(this.tileTo[0] != this.tileFrom[0]) {
+			  let diff = (tileW / this.delayMove) * (t-this.timeMoved);
+			  this.position[0]+= (this.tileTo[0]<this.tileFrom[0] ? 0 - diff : diff);
+		  }
+		  if(this.tileTo[1] != this.tileFrom[1]) {
+			  let diff = (tileH / this.delayMove) * (t-this.timeMoved);
+			  this.position[1]+= (this.tileTo[1]<this.tileFrom[1] ? 0 - diff : diff);
+		  }
+
+      this.position[0] = Math.round(this.position[0]);
+		  this.position[1] = Math.round(this.position[1]);
+    }
+    return true;
+
   }
 
   move(e) {
@@ -103,15 +145,24 @@ socket.on("move", function (msg) {
 
 socket.on("newPlayer", function (id, allPlayers) {
   console.log(allPlayers);
+  createPlayer(id);
+});
+
+socket.on("look", function (data) {
+  const lookingPlayer = document.getElementById(`player-${data.id}`);
+  if (lookingPlayer === null) {
+    createPlayer(data.id);
+  } else {
+    document.getElementById(
+      `player-${data.id}`
+    ).style.transform = `rotate(${data.angle}deg)`;
+  }
+});
+
+function createPlayer(id) {
   const newPlayerBox = document.createElement("div");
   newPlayerBox.classList.add("player-box");
   newPlayerBox.innerHTML = `<div class="player" id="player-${id}" ></div><div class="player-tag">${id}</div>`;
 
   document.body.appendChild(newPlayerBox);
-});
-
-socket.on("look", function (data) {
-  document.getElementById(
-    `player-${data.id}`
-  ).style.transform = `rotate(${data.angle}deg)`;
-});
+}
